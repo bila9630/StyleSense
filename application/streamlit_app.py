@@ -2,25 +2,35 @@ import streamlit as st
 import random
 import cv2
 import numpy as np
+import pickle
 
 st.set_page_config(
     page_title="Integrationsseminar",
     page_icon="👕",
 )
 
+# loading the saved model
+loaded_model = pickle.load(open("trained_model.sav", "rb"))
+
+clothes_dict = {
+    0: "T-shirt/top",
+    1: "Trouser",
+    2: "Pullover",
+    3: "Dress",
+    4: "Coat",
+    5: "Sandal",
+    6: "Shirt",
+    7: "Sneaker",
+    8: "Bag",
+    9: "Ankle boot",
+}
+
+def model_prediction(image):
+    category = loaded_model.predict(image)
+    category_name = clothes_dict[category[0]]
+    return category_name
+
 def random_class(image):
-    clothes_dict = {
-        0: "T-shirt/top",
-        1: "Trouser",
-        2: "Pullover",
-        3: "Dress",
-        4: "Coat",
-        5: "Sandal",
-        6: "Shirt",
-        7: "Sneaker",
-        8: "Bag",
-        9: "Ankle boot",
-    }
     # generate random number between 0 and 9
     random_number = random.randint(0, 9)
 
@@ -67,6 +77,9 @@ if img_file_buffer is not None:
     img_flatten_2 = img_flatten / 255
     st.write(img_flatten_2)
 
-    category, confidence = random_class("image")
-    st.write(f"Category: {category}")
-    st.write(f"Confidence: {confidence}")
+    # category, confidence = random_class(img_flatten_2)
+    # st.write(f"Category: {category}")
+    # st.write(f"Confidence: {confidence}")
+
+    category2 = model_prediction(img_flatten_2)
+    st.write(f"Category: {category2}")
