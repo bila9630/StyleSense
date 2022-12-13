@@ -1,3 +1,72 @@
 import streamlit as st
+import random
+import cv2
+import numpy as np
 
-st.title("Hello World")
+st.set_page_config(
+    page_title="Integrationsseminar",
+    page_icon="👕",
+)
+
+def random_class(image):
+    clothes_dict = {
+        0: "T-shirt/top",
+        1: "Trouser",
+        2: "Pullover",
+        3: "Dress",
+        4: "Coat",
+        5: "Sandal",
+        6: "Shirt",
+        7: "Sneaker",
+        8: "Bag",
+        9: "Ankle boot",
+    }
+    # generate random number between 0 and 9
+    random_number = random.randint(0, 9)
+
+    category = clothes_dict[random_number]
+    confidence = round(random.random(), 2)
+    return category, confidence
+
+
+st.title("Fashion MNIST")
+st.write("Simply upload a picture of a piece of clothing or take a picture of yourself \
+    and we will tell you what it is.")
+
+img_file_buffer = st.camera_input("Take a picture")
+
+if img_file_buffer is not None:
+    # to read image file buffer with OpenCV
+    bytes_data = img_file_buffer.getvalue()
+
+    # convert to numpy array and read as grayscale
+    st.write("First step: convert to numpy array and read as grayscale")
+    cv2_img = cv2.imdecode(np.frombuffer(
+        bytes_data, np.uint8), cv2.IMREAD_GRAYSCALE)
+    st.image(cv2_img)
+    # Check the type of cv2_img:
+    st.write("Original dimension: ", cv2_img.shape)
+
+    # resize image to 28x28
+    st.write("Second step: resize image to 28x28")
+    cv2_img_2 = cv2.resize(cv2_img, (28, 28))
+    st.image(cv2_img_2, width=400)
+    st.write("Resized dimension: ", cv2_img_2.shape)
+
+    # image as numpy array
+    st.write("The image as numpy array")
+    st.write("Original shape: ", cv2_img.shape)
+    st.write("Image shape: ", cv2_img_2.shape)
+    st.write(cv2_img_2)
+
+    # flatten image
+    img_flatten = cv2_img_2.reshape(1, -1)
+    st.write("Flatten image: ", img_flatten.shape)
+    st.write(img_flatten)
+    st.write("Rescale values by dividing by 255: ")
+    img_flatten_2 = img_flatten / 255
+    st.write(img_flatten_2)
+
+    category, confidence = random_class("image")
+    st.write(f"Category: {category}")
+    st.write(f"Confidence: {confidence}")
