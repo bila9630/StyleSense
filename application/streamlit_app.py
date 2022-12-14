@@ -10,7 +10,9 @@ st.set_page_config(
 )
 
 # loading the saved model
-loaded_model = pickle.load(open("trained_model.sav", "rb"))
+# uncomment the following line if you are running the app locally
+#loaded_model = pickle.load(open("trained_model.sav", "rb"))
+loaded_model = pickle.load(open("application/trained_model.sav", "rb"))
 
 clothes_dict = {
     0: "T-shirt/top",
