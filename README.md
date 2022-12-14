@@ -1,4 +1,6 @@
 # Integrationsseminar
+Check out our application: https://bila9630-integrationsseminar-applicationstreamlit-app-a1fjrt.streamlit.app/
+
 ### how to start locally
 ```
 cd application
