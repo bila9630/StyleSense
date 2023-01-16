@@ -2,7 +2,7 @@ import streamlit as st
 import pickle
 import numpy as np
 import cv2
-from tensorflow import keras
+# from tensorflow import keras
 
 # loaded_model = pickle.load(open("model0.sav", "rb"))
 loaded_model = pickle.load(open("application/model0.sav", "rb"))
