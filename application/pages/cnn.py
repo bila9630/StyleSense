@@ -4,7 +4,8 @@ import numpy as np
 import cv2
 from tensorflow import keras
 
-loaded_model = pickle.load(open("model0.sav", "rb"))
+# loaded_model = pickle.load(open("model0.sav", "rb"))
+loaded_model = pickle.load(open("application/model0.sav", "rb"))
 
 st.title("Fashion MNIST")
 st.write("Simply upload a picture of a piece of clothing or take a picture of yourself \
