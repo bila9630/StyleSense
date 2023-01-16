@@ -11,8 +11,8 @@ st.set_page_config(
 
 # loading the saved model
 # uncomment the following line if you are running the app locally
-# loaded_model = pickle.load(open("trained_model.sav", "rb"))
-loaded_model = pickle.load(open("application/trained_model.sav", "rb"))
+loaded_model = pickle.load(open("trained_model.sav", "rb"))
+# loaded_model = pickle.load(open("application/trained_model.sav", "rb"))
 
 clothes_dict = {
     0: "T-shirt/top",
@@ -27,10 +27,12 @@ clothes_dict = {
     9: "Ankle boot",
 }
 
+
 def model_prediction(image):
     category = loaded_model.predict(image)
     category_name = clothes_dict[category[0]]
     return category_name
+
 
 def random_class(image):
     # generate random number between 0 and 9
