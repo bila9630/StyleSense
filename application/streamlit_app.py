@@ -2,6 +2,7 @@ import streamlit as st
 import cv2
 import numpy as np
 import pickle
+from keras.models import load_model
 
 # set page config (must be called as the first Streamlit command)
 st.set_page_config(
@@ -15,19 +16,17 @@ st.set_page_config(
 @st.cache(allow_output_mutation=True)
 def load_model_path():
     model_linear = pickle.load(open("application/trained_model.sav", "rb"))
-    model_1_layer = pickle.load(open("application/model_1_layer.sav", "rb"))
-    model_2_layer = pickle.load(open("application/model_2_layer.sav", "rb"))
-    model_3_layer = pickle.load(open("application/model_3_layer.sav", "rb"))
-    return model_linear, model_1_layer, model_2_layer, model_3_layer
+    model_cnn = load_model("application/cnn_model_3.h5")
+    return model_linear, model_cnn
 
-model_linear, model_1_layer, model_2_layer, model_3_layer = load_model_path()
+
+model_linear, model_cnn = load_model_path()
 
 
 # import model on local machine (UNCOMMENT BELOW WHEN RUNNING LOCAL)
 # model_linear = pickle.load(open("trained_model.sav", "rb"))
-# model_1_layer = pickle.load(open("model_1_layer.sav", "rb"))
-# model_2_layer = pickle.load(open("model_2_layer.sav", "rb"))
-# model_3_layer = pickle.load(open("model_3_layer.sav", "rb"))
+# model_cnn = load_model("cnn_model_3.h5")
+
 
 # dictionary for categories
 clothes_dict = {
@@ -57,29 +56,18 @@ def predict_linear(image):
     return category, max_prob
 
 
-# Create a list to store the model
-cnn_models = [model_1_layer, model_2_layer, model_3_layer]
-
-
-def predict_nn(image):
+def predict_cnn(image):
     # Reshape image to 1x28x28x1
     image_reshape_nn = image.reshape(1, 28, 28, 1)
+    # Predict the category with the current model
+    model_prediction = model_cnn.predict(image_reshape_nn)
+    # get the index where the highest value is
+    category = np.argmax(model_prediction)
+    category_name = clothes_dict[category]
+    # get the highest value
+    prob = np.max(model_prediction)
 
-    # Create a dictionary to store the predictions of each model
-    predictions = {}
-    # Iterate over the models
-    for i, model in enumerate(cnn_models):
-        # Predict the category with the current model
-        model_prediction = model.predict(image_reshape_nn)
-        # get the index where the highest value is
-        category = np.argmax(model_prediction)
-        # get the highest value
-        prob = np.max(model_prediction)
-        # Add the prediction to the dictionary
-        predictions["model_{}_category".format(i + 1)] = clothes_dict[category]
-        predictions["model_{}_prob".format(i + 1)] = prob
-
-    return predictions
+    return category_name, prob
 
 
 st.title("Fashion MNIST")
@@ -125,13 +113,9 @@ if img_file_buffer is not None:
         img_flatten_rescaled)
 
     # predict category neural network
-    predictions_nn = predict_nn(cv2_img_resized)
+    category_cnn, category_cnn_prob = predict_cnn(cv2_img_resized)
 
     st.write(
         f"Category linear: {category_linear} with probability: {category_linear_prob}")
     st.write(
-        f"Category 1 CNN layer: {predictions_nn['model_1_category']} with probability: {predictions_nn['model_1_prob']}")
-    st.write(
-        f"Category 2 CNN layer: {predictions_nn['model_2_category']} with probability: {predictions_nn['model_2_prob']}")
-    st.write(
-        f"Category 3 CNN layer: {predictions_nn['model_3_category']} with probability: {predictions_nn['model_3_prob']}")
+        f"Category 3 CNN layer: {category_cnn} with probability: {category_cnn_prob}")
