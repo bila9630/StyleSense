@@ -11,4 +11,4 @@ tqdm==4.64.1
 tensorflow
 keras
 keras_preprocessing
-opencv-python
+opencv-python-headless
