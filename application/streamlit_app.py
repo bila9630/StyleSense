@@ -14,30 +14,31 @@ st.set_page_config(
 
 # import model for deployment
 # load model with cache
-# @st.cache(allow_output_mutation=True)
-# def load_model_path():
-#     model_decision_tree = pickle.load(
-#         open("application/decision_tree.pkl", "rb"))
-#     model_cnn_1 = load_model("application/cnn_model_1.h5")
-#     model_cnn_2 = load_model("application/cnn_model_2.h5")
-#     model_cnn_3 = load_model("application/cnn_model_3.h5")
-#     # model_xgb = pickle.load(open("application/model_xgb.pkl", "rb"))
-#     model_rf = pickle.load(open("application/model_rf.pkl", "rb"))
-#     return model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3, model_rf
+@st.cache(allow_output_mutation=True)
+def load_model_path():
+    model_decision_tree = pickle.load(
+        open("application/decision_tree.pkl", "rb"))
+    model_cnn_1 = load_model("application/cnn_model_1.h5")
+    model_cnn_2 = load_model("application/cnn_model_2.h5")
+    model_cnn_3 = load_model("application/cnn_model_3.h5")
+    model_rf = pickle.load(open("application/model_rf.pkl", "rb"))
+    model_xgb = xgb.XGBClassifier()
+    model_xgb.load_model("application/model_xgb.txt")
+    return model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3, model_rf, model_xgb
 
 
-# model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3, model_rf = load_model_path()
+model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3, model_rf, model_xgb = load_model_path()
 
 
 # import model on local machine (UNCOMMENT BELOW WHEN RUNNING LOCAL)
-model_decision_tree = pickle.load(open("decision_tree.pkl", "rb"))
-model_rf = pickle.load(open("model_rf.pkl", "rb"))
-model_cnn_1 = load_model("cnn_model_1.h5")
-model_cnn_2 = load_model("cnn_model_2.h5")
-model_cnn_3 = load_model("cnn_model_3.h5")
+# model_decision_tree = pickle.load(open("decision_tree.pkl", "rb"))
+# model_rf = pickle.load(open("model_rf.pkl", "rb"))
+# model_cnn_1 = load_model("cnn_model_1.h5")
+# model_cnn_2 = load_model("cnn_model_2.h5")
+# model_cnn_3 = load_model("cnn_model_3.h5")
 
-model_xgb = xgb.XGBClassifier()
-model_xgb.load_model("model_xgb.txt")
+# model_xgb = xgb.XGBClassifier()
+# model_xgb.load_model("model_xgb.txt")
 
 # dictionary for categories
 clothes_dict = {
