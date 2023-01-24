@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import pickle
 from keras.models import load_model
+# import xgboost as xgb
 
 # set page config (must be called as the first Streamlit command)
 st.set_page_config(
@@ -15,22 +16,29 @@ st.set_page_config(
 # load model with cache
 @st.cache(allow_output_mutation=True)
 def load_model_path():
-    model_decision_tree = pickle.load(open("application/decision_tree.pkl", "rb"))
+    model_decision_tree = pickle.load(
+        open("application/decision_tree.pkl", "rb"))
     model_cnn_1 = load_model("application/cnn_model_1.h5")
     model_cnn_2 = load_model("application/cnn_model_2.h5")
     model_cnn_3 = load_model("application/cnn_model_3.h5")
-    return model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3
+    # model_xgb = pickle.load(open("application/model_xgb.pkl", "rb"))
+    model_rf = pickle.load(open("application/model_rf.pkl", "rb"))
+    return model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3, model_rf
 
 
-model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3 = load_model_path()
+model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3, model_rf = load_model_path()
 
 
 # import model on local machine (UNCOMMENT BELOW WHEN RUNNING LOCAL)
 # model_decision_tree = pickle.load(open("decision_tree.pkl", "rb"))
+# model_rf = pickle.load(open("model_rf.pkl", "rb"))
 # model_cnn_1 = load_model("cnn_model_1.h5")
 # model_cnn_2 = load_model("cnn_model_2.h5")
 # model_cnn_3 = load_model("cnn_model_3.h5")
 
+# model_xgb = pickle.load(open("model_xgb.pkl", "rb"))
+# model_xgb = xgb.XGBRegressor()
+# model_xgb.load_model("model_xgb.pkl")
 
 # dictionary for categories
 clothes_dict = {
@@ -62,6 +70,18 @@ def predict_linear(model, image):
     category_name = clothes_dict[np.argmax(probs)]
 
     return category_name, max_prob
+
+
+def predict_xgboost(model, image):
+    # Predict the class label
+    y_pred = model.predict(image)
+    # Get the index of the predicted class
+    class_index = int(y_pred[0])
+    # Get the class name
+    class_name = clothes_dict[class_index]
+    # Get the predicted class probability
+    class_proba = model.predict(image, output_margin=True)
+    return class_name, class_proba
 
 
 def predict_cnn(model, image):
@@ -125,6 +145,10 @@ if img_file_buffer is not None:
     # predict category decision tree classifier
     category_decision_tree, category_decision_tree_prob = predict_linear(
         model_decision_tree, img_flatten)
+    category_random_forest, category_random_forest_prob = predict_linear(
+        model_rf, img_flatten)
+    # category_xgb, category_xgb_prob = predict_xgboost(
+    #     model_xgb, img_flatten)
 
     # predict category cnn
     category_cnn_1, category_cnn_prob_1 = predict_cnn(
@@ -137,6 +161,11 @@ if img_file_buffer is not None:
     st.write("The model predicts the following categories:")
     st.write(
         f"Decision Tree: {category_decision_tree} - probability: {category_decision_tree_prob}")
+    # st.write(
+    #     f"XGBoost: {category_xgb} - probability: {category_xgb_prob}"
+    # )
+    st.write(
+        f"Random Forest: {category_random_forest} - probability: {category_random_forest_prob}")
     st.write(
         f"1 CNN layer: {category_cnn_1} - probability: {category_cnn_prob_1}")
     st.write(

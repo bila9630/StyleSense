@@ -12,3 +12,4 @@ tensorflow
 keras
 keras_preprocessing
 opencv-python-headless
+# xgboost
