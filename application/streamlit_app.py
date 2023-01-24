@@ -13,19 +13,23 @@ st.set_page_config(
 
 # import model for deployment
 # load model with cache
-@st.cache(allow_output_mutation=True)
-def load_model_path():
-    model_linear = pickle.load(open("application/trained_model.sav", "rb"))
-    model_cnn = load_model("application/cnn_model_3.h5")
-    return model_linear, model_cnn
+# @st.cache(allow_output_mutation=True)
+# def load_model_path():
+#     model_linear = pickle.load(open("application/trained_model.sav", "rb"))
+#     model_cnn_1 = load_model("application/cnn_model_1.h5")
+#     model_cnn_2 = load_model("application/cnn_model_2.h5")
+#     model_cnn_3 = load_model("application/cnn_model_3.h5")
+#     return model_linear, model_cnn_1, model_cnn_2, model_cnn_3
 
 
-model_linear, model_cnn = load_model_path()
+# model_linear, model_cnn_1, model_cnn_2, model_cnn_3 = load_model_path()
 
 
 # import model on local machine (UNCOMMENT BELOW WHEN RUNNING LOCAL)
 # model_linear = pickle.load(open("trained_model.sav", "rb"))
-# model_cnn = load_model("cnn_model_3.h5")
+# model_cnn_1 = load_model("cnn_model_1.h5")
+# model_cnn_2 = load_model("cnn_model_2.h5")
+# model_cnn_3 = load_model("cnn_model_3.h5")
 
 
 # dictionary for categories
@@ -56,14 +60,14 @@ def predict_linear(image):
     return category, max_prob
 
 
-def predict_cnn(image):
+def predict_cnn(model, image):
     # Reshape image to 1x28x28x1
-    image_reshape_nn = image.reshape(1, 28, 28, 1)
+    im_shape = (28, 28, 1)
+    image_reshaped = image.reshape(1, *im_shape)
     # Predict the category with the current model
-    model_prediction = model_cnn.predict(image_reshape_nn)
-    # get the index where the highest value is
-    category = np.argmax(model_prediction)
-    category_name = clothes_dict[category]
+    model_prediction = model.predict(image_reshaped)
+    # get the category name
+    category_name = clothes_dict[np.argmax(model_prediction)]
     # get the highest value
     prob = np.max(model_prediction)
 
@@ -112,10 +116,20 @@ if img_file_buffer is not None:
     category_linear, category_linear_prob = predict_linear(
         img_flatten_rescaled)
 
-    # predict category neural network
-    category_cnn, category_cnn_prob = predict_cnn(cv2_img_resized)
+    # predict category cnn
+    category_cnn_1, category_cnn_prob_1 = predict_cnn(
+        model_cnn_1, cv2_img_resized)
+    category_cnn_2, category_cnn_prob_2 = predict_cnn(
+        model_cnn_2, cv2_img_resized)
+    category_cnn_3, category_cnn_prob_3 = predict_cnn(
+        model_cnn_3, cv2_img_resized)
 
+    st.write("The model predicts the following categories:")
     st.write(
-        f"Category linear: {category_linear} with probability: {category_linear_prob}")
+        f"Linear: {category_linear} - probability: {category_linear_prob}")
     st.write(
-        f"Category 3 CNN layer: {category_cnn} with probability: {category_cnn_prob}")
+        f"1 CNN layer: {category_cnn_1} - probability: {category_cnn_prob_1}")
+    st.write(
+        f"2 CNN layer: {category_cnn_2} - probability: {category_cnn_prob_2}")
+    st.write(
+        f"3 CNN layer: {category_cnn_3} - probability: {category_cnn_prob_3}")
