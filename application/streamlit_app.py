@@ -48,19 +48,20 @@ clothes_dict = {
 
 
 # linear model prediction
-def predict_linear(image):
+def predict_linear(model, image):
     # Predict probabilities for each category -> [0.01 0.01 0.2 0. 0.02 0. 0.17 0. 0.59 0. ]
-    probs = model_linear.predict_proba(image)[0]
-    
+    probs = model.predict_proba(image)[0]
+
     # Get the index of the highest probability -> 8
     max_prob_index = np.argmax(probs)
-    
+
     # Get the highest probability -> 0.59
     max_prob = probs[max_prob_index]
-    
+
     # Get the category name -> Bag
-    category = clothes_dict[max_prob_index]
-    return category, max_prob
+    category_name = clothes_dict[np.argmax(probs)]
+
+    return category_name, max_prob
 
 
 def predict_cnn(model, image):
@@ -70,13 +71,13 @@ def predict_cnn(model, image):
     # Reshape image to 1x28x28x1
     im_shape = (28, 28, 1)
     image_reshaped = image_rescaled.reshape(1, *im_shape)
-    
+
     # Predict the category with the current model
     model_prediction = model.predict(image_reshaped)
-    
+
     # get the category name
     category_name = clothes_dict[np.argmax(model_prediction)]
-    
+
     # get the highest value
     prob = np.max(model_prediction)
 
@@ -117,13 +118,13 @@ if img_file_buffer is not None:
     img_flatten = cv2_img_resized.reshape(1, -1)
     st.write("Flatten image: ", img_flatten.shape)
     st.write(img_flatten)
-    st.write("Rescale values by dividing by 255: ")
+    st.write("Rescale values by dividing by 255 (optional): ")
     img_flatten_rescaled = img_flatten / 255
     st.write(img_flatten_rescaled)
 
     # predict category linear
     category_linear, category_linear_prob = predict_linear(
-        img_flatten_rescaled)
+        model_linear, img_flatten)
 
     # predict category cnn
     category_cnn_1, category_cnn_prob_1 = predict_cnn(
