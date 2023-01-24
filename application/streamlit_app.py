@@ -13,16 +13,16 @@ st.set_page_config(
 
 # import model for deployment
 # load model with cache
-# @st.cache(allow_output_mutation=True)
-# def load_model_path():
-#     model_linear = pickle.load(open("application/trained_model.sav", "rb"))
-#     model_cnn_1 = load_model("application/cnn_model_1.h5")
-#     model_cnn_2 = load_model("application/cnn_model_2.h5")
-#     model_cnn_3 = load_model("application/cnn_model_3.h5")
-#     return model_linear, model_cnn_1, model_cnn_2, model_cnn_3
+@st.cache(allow_output_mutation=True)
+def load_model_path():
+    model_linear = pickle.load(open("application/trained_model.sav", "rb"))
+    model_cnn_1 = load_model("application/cnn_model_1.h5")
+    model_cnn_2 = load_model("application/cnn_model_2.h5")
+    model_cnn_3 = load_model("application/cnn_model_3.h5")
+    return model_linear, model_cnn_1, model_cnn_2, model_cnn_3
 
 
-# model_linear, model_cnn_1, model_cnn_2, model_cnn_3 = load_model_path()
+model_linear, model_cnn_1, model_cnn_2, model_cnn_3 = load_model_path()
 
 
 # import model on local machine (UNCOMMENT BELOW WHEN RUNNING LOCAL)
