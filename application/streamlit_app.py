@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import pickle
 from keras.models import load_model
-# import xgboost as xgb
+import xgboost as xgb
 
 # set page config (must be called as the first Streamlit command)
 st.set_page_config(
@@ -14,31 +14,30 @@ st.set_page_config(
 
 # import model for deployment
 # load model with cache
-@st.cache(allow_output_mutation=True)
-def load_model_path():
-    model_decision_tree = pickle.load(
-        open("application/decision_tree.pkl", "rb"))
-    model_cnn_1 = load_model("application/cnn_model_1.h5")
-    model_cnn_2 = load_model("application/cnn_model_2.h5")
-    model_cnn_3 = load_model("application/cnn_model_3.h5")
-    # model_xgb = pickle.load(open("application/model_xgb.pkl", "rb"))
-    model_rf = pickle.load(open("application/model_rf.pkl", "rb"))
-    return model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3, model_rf
+# @st.cache(allow_output_mutation=True)
+# def load_model_path():
+#     model_decision_tree = pickle.load(
+#         open("application/decision_tree.pkl", "rb"))
+#     model_cnn_1 = load_model("application/cnn_model_1.h5")
+#     model_cnn_2 = load_model("application/cnn_model_2.h5")
+#     model_cnn_3 = load_model("application/cnn_model_3.h5")
+#     # model_xgb = pickle.load(open("application/model_xgb.pkl", "rb"))
+#     model_rf = pickle.load(open("application/model_rf.pkl", "rb"))
+#     return model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3, model_rf
 
 
-model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3, model_rf = load_model_path()
+# model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3, model_rf = load_model_path()
 
 
 # import model on local machine (UNCOMMENT BELOW WHEN RUNNING LOCAL)
-# model_decision_tree = pickle.load(open("decision_tree.pkl", "rb"))
-# model_rf = pickle.load(open("model_rf.pkl", "rb"))
-# model_cnn_1 = load_model("cnn_model_1.h5")
-# model_cnn_2 = load_model("cnn_model_2.h5")
-# model_cnn_3 = load_model("cnn_model_3.h5")
+model_decision_tree = pickle.load(open("decision_tree.pkl", "rb"))
+model_rf = pickle.load(open("model_rf.pkl", "rb"))
+model_cnn_1 = load_model("cnn_model_1.h5")
+model_cnn_2 = load_model("cnn_model_2.h5")
+model_cnn_3 = load_model("cnn_model_3.h5")
 
-# model_xgb = pickle.load(open("model_xgb.pkl", "rb"))
-# model_xgb = xgb.XGBRegressor()
-# model_xgb.load_model("model_xgb.pkl")
+model_xgb = xgb.XGBClassifier()
+model_xgb.load_model("model_xgb.txt")
 
 # dictionary for categories
 clothes_dict = {
@@ -80,7 +79,7 @@ def predict_xgboost(model, image):
     # Get the class name
     class_name = clothes_dict[class_index]
     # Get the predicted class probability
-    class_proba = model.predict(image, output_margin=True)
+    class_proba = model.predict_proba(image)[0][class_index]
     return class_name, class_proba
 
 
@@ -147,8 +146,8 @@ if img_file_buffer is not None:
         model_decision_tree, img_flatten)
     category_random_forest, category_random_forest_prob = predict_linear(
         model_rf, img_flatten)
-    # category_xgb, category_xgb_prob = predict_xgboost(
-    #     model_xgb, img_flatten)
+    category_xgb, category_xgb_prob = predict_xgboost(
+        model_xgb, img_flatten)
 
     # predict category cnn
     category_cnn_1, category_cnn_prob_1 = predict_cnn(
@@ -160,15 +159,15 @@ if img_file_buffer is not None:
 
     st.write("The model predicts the following categories:")
     st.write(
-        f"Decision Tree: {category_decision_tree} - probability: {category_decision_tree_prob}")
-    # st.write(
-    #     f"XGBoost: {category_xgb} - probability: {category_xgb_prob}"
-    # )
+        f"Decision Tree: {category_decision_tree} - probability: {category_decision_tree_prob:.2f}")
     st.write(
-        f"Random Forest: {category_random_forest} - probability: {category_random_forest_prob}")
+        f"XGBoost: {category_xgb} - probability: {category_xgb_prob:.2f}"
+    )
     st.write(
-        f"1 CNN layer: {category_cnn_1} - probability: {category_cnn_prob_1}")
+        f"Random Forest: {category_random_forest} - probability: {category_random_forest_prob:.2f}")
     st.write(
-        f"2 CNN layer: {category_cnn_2} - probability: {category_cnn_prob_2}")
+        f"1 CNN layer: {category_cnn_1} - probability: {category_cnn_prob_1:.2f}")
     st.write(
-        f"3 CNN layer: {category_cnn_3} - probability: {category_cnn_prob_3}")
+        f"2 CNN layer: {category_cnn_2} - probability: {category_cnn_prob_2:.2f}")
+    st.write(
+        f"3 CNN layer: {category_cnn_3} - probability: {category_cnn_prob_3:.2f}")
