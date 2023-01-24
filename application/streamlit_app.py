@@ -13,23 +13,23 @@ st.set_page_config(
 
 # import model for deployment
 # load model with cache
-@st.cache(allow_output_mutation=True)
-def load_model_path():
-    model_linear = pickle.load(open("application/trained_model.sav", "rb"))
-    model_cnn_1 = load_model("application/cnn_model_1.h5")
-    model_cnn_2 = load_model("application/cnn_model_2.h5")
-    model_cnn_3 = load_model("application/cnn_model_3.h5")
-    return model_linear, model_cnn_1, model_cnn_2, model_cnn_3
+# @st.cache(allow_output_mutation=True)
+# def load_model_path():
+#     model_decision_tree = pickle.load(open("application/decision_tree.pkl", "rb"))
+#     model_cnn_1 = load_model("application/cnn_model_1.h5")
+#     model_cnn_2 = load_model("application/cnn_model_2.h5")
+#     model_cnn_3 = load_model("application/cnn_model_3.h5")
+#     return model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3
 
 
-model_linear, model_cnn_1, model_cnn_2, model_cnn_3 = load_model_path()
+# model_decision_tree, model_cnn_1, model_cnn_2, model_cnn_3 = load_model_path()
 
 
 # import model on local machine (UNCOMMENT BELOW WHEN RUNNING LOCAL)
-# model_linear = pickle.load(open("trained_model.sav", "rb"))
-# model_cnn_1 = load_model("cnn_model_1.h5")
-# model_cnn_2 = load_model("cnn_model_2.h5")
-# model_cnn_3 = load_model("cnn_model_3.h5")
+model_decision_tree = pickle.load(open("decision_tree.pkl", "rb"))
+model_cnn_1 = load_model("cnn_model_1.h5")
+model_cnn_2 = load_model("cnn_model_2.h5")
+model_cnn_3 = load_model("cnn_model_3.h5")
 
 
 # dictionary for categories
@@ -122,9 +122,9 @@ if img_file_buffer is not None:
     img_flatten_rescaled = img_flatten / 255
     st.write(img_flatten_rescaled)
 
-    # predict category linear
-    category_linear, category_linear_prob = predict_linear(
-        model_linear, img_flatten)
+    # predict category decision tree classifier
+    category_decision_tree, category_decision_tree_prob = predict_linear(
+        model_decision_tree, img_flatten)
 
     # predict category cnn
     category_cnn_1, category_cnn_prob_1 = predict_cnn(
@@ -136,7 +136,7 @@ if img_file_buffer is not None:
 
     st.write("The model predicts the following categories:")
     st.write(
-        f"Linear: {category_linear} - probability: {category_linear_prob}")
+        f"Decision Tree: {category_decision_tree} - probability: {category_decision_tree_prob}")
     st.write(
         f"1 CNN layer: {category_cnn_1} - probability: {category_cnn_prob_1}")
     st.write(
