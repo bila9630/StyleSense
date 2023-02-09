@@ -10,7 +10,7 @@ Idea: Developing an application that utilizes CNN to identify clothing items wor
 <br>Group: Hannah Schult, Sofie Pischl, Viet Duc Kieu
 
 ## Navigation
-- **Model Development** can be found in the notebook analytics
+- **Model Development** can be found in the folder [/analytics](/analytics)
 - **Application** can be found in the folder [/application](/application)
 - **Data** can be found in the folder [/data](/data)
 - **Presentation** can be found in the folder [/docs](/docs/FashionMNIST%20-%20Integrationsseminar.pptx)
