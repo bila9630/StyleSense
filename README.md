@@ -14,6 +14,7 @@ Idea: Developing an application that utilizes CNN to identify clothing items wor
 - **Application** can be found in the folder [/application](/application)
 - **Data** can be found in the folder [/data](/data)
 - **Presentation** can be found in the folder [/docs](/docs/FashionMNIST%20-%20Integrationsseminar.pptx)
+- **Dokumentation** can be found in the folder [/docs](/docs/FashionMNIST%20-%20Seminararbeit.pdf)
 
 ## application
 ### how to start locally
