@@ -13,3 +13,4 @@ keras
 keras_preprocessing
 opencv-python-headless
 xgboost
+protobuf==3.20.*
