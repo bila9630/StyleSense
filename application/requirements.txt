@@ -13,4 +13,5 @@ keras
 keras_preprocessing
 opencv-python-headless
 xgboost
-protobuf~=3.19.0
+grpcio-status==1.33.2
+protobuf==3.19.6
