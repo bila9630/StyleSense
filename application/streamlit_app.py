@@ -14,7 +14,7 @@ st.set_page_config(
 
 # import model for deployment
 # load model with cache
-@st.cache(allow_output_mutation=True)
+@st.cache_resource
 def load_model_path():
     model_decision_tree = pickle.load(
         open("application/decision_tree.pkl", "rb"))
