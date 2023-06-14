@@ -1,5 +1,5 @@
 # Integrationsseminar
-Check out our application: [https://bila9630-integrationsseminar-applicationstreamlit-app-a1fjrt.streamlit.app/](https://bila9630-stylesense-applicationstreamlit-app-okes4r.streamlit.app/)
+Check out our application: https://bila9630-stylesense-applicationstreamlit-app-okes4r.streamlit.app/
 
 
 ## Project description
